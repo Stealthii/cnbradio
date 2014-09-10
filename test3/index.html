@@ -1,4 +1,5 @@
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,136 +15,157 @@
     <link rel="stylesheet" href="css/font.css">
     <link rel="stylesheet" href="css/imprint.css">
     <link rel="stylesheet" href="css/not.the.skin.css">
-<style type="text/css">
-    .rotate {
-    -webkit-animation: rotation 2s infinite linear;
-    -moz-animation: rotation 2s infinite linear;
-    -ms-animation: rotation 2s infinite linear;
-    -o-animation: rotation 2s infinite linear;
-}
-
-@-webkit-keyframes rotation {
-    from {-webkit-transform: rotate(0deg);}
-    to   {-webkit-transform: rotate(359deg);}
-}
-
-@-moz-keyframes rotation {
-    from {-moz-transform: rotate(0deg);}
-    to   {-moz-transform: rotate(359deg);}
-}
-
-@-ms-keyframes rotation {
-    from {-ms-transform: rotate(0deg);}
-    to   {-ms-transform: rotate(359deg);}
-}
-
-@-o-keyframes rotation {
-    from {-o-transform: rotate(0deg);}
-    to   {-o-transform: rotate(359deg);}
-}
-  </style>
+    <style type="text/css">
+        .rotate {
+            -webkit-animation: rotation 2s infinite linear;
+            -moz-animation: rotation 2s infinite linear;
+            -ms-animation: rotation 2s infinite linear;
+            -o-animation: rotation 2s infinite linear;
+        }
+        @-webkit-keyframes rotation {
+            from {
+                -webkit-transform: rotate(0deg);
+            }
+            to {
+                -webkit-transform: rotate(359deg);
+            }
+        }
+        @-moz-keyframes rotation {
+            from {
+                -moz-transform: rotate(0deg);
+            }
+            to {
+                -moz-transform: rotate(359deg);
+            }
+        }
+        @-ms-keyframes rotation {
+            from {
+                -ms-transform: rotate(0deg);
+            }
+            to {
+                -ms-transform: rotate(359deg);
+            }
+        }
+        @-o-keyframes rotation {
+            from {
+                -o-transform: rotate(0deg);
+            }
+            to {
+                -o-transform: rotate(359deg);
+            }
+        }
+    </style>
 
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript" src="//jplayer.org/latest/js/jquery.jplayer.min.js"></script>
-<script type="text/javascript">//<![CDATA[ 
-$(window).load(function(){
-var autoplay = false;
+    <script type="text/javascript">
+        //<![CDATA[
+        $(window).load(function() {
+            var autoplay = false;
 
-function radioTitle() {
+            function radioTitle() {
+                var url = 'http://cnr.stealthii.net/json.xsl';
+                $.ajax({
+                    type: 'GET',
+                    url: url,
+                    async: true,
+                    jsonpCallback: 'parseMusic',
+                    contentType: "application/json",
+                    dataType: 'jsonp',
+                    success: function(json) {
+                        $('#current-track').text(json['/cnbradio']['title']);
+                        $('#listeners').text(json['/cnbradio']['listeners']);
+                    },
+                    error: function(e) {
+                        console.log(e.message);
+                    }
+                });
+            }
 
-var url = 'http://cnr.stealthii.net/json.xsl';
 
-$.ajax({
-   type: 'GET',
-    url: url,
-    async: true,
-    jsonpCallback: 'parseMusic',
-    contentType: "application/json",
-    dataType: 'jsonp',
-    success: function(json) {
-       $('#current-track').text(json['/cnbradio']['title']);
-       $('#listeners').text(json['/cnbradio']['listeners']);
-    },
-    error: function(e) {
-       console.log(e.message);
-    }
-});
+            $(document).ready(function() {
 
-}
+                setTimeout(function() {
+                    radioTitle();
+                }, 1000);
+                setInterval(function() {
+                    radioTitle();
+                }, 10000);
+                $("#jquery_jplayer_1").jPlayer({
+                    ready: function() {
+                        $(this).jPlayer("setMedia", {
+                            mp3: "http://cnr.stealthii.net/cnbradio",
+                        });
+                        if (autoplay == true)
+                            $(this).jPlayer("play");
+                    },
+                    swfPath: "js",
+                    supplied: "mp3",
+                    preload: "none",
+                    keyEnable: true,
+                    wmode: "window",
+                });
+            });
 
-$(document).ready(function(){
-
-    setTimeout(function(){radioTitle();}, 1000);
-  setInterval(function(){radioTitle();}, 10000);
-    $("#jquery_jplayer_1").jPlayer({
-    ready: function () {
-      $(this).jPlayer("setMedia", {
-        mp3: "http://cnr.stealthii.net/cnbradio",
-      });
-      if (autoplay == true)
-         $(this).jPlayer("play");
-    },
-    swfPath: "js",
-    supplied: "mp3",
-    preload: "none",
-    keyEnable: true,
-    wmode: "window",
-  });
-    });
-
-$('.splash').on('click','.jp-play',function () {
-    $('#imprint-logo').removeClass('rotate');
-    $('#imprint-logo').addClass('rotate')
-});
-});//]]>  
-
-</script>
-
+            $('.splash').on('click', '.jp-play', function() {
+                $('#imprint-logo').removeClass('rotate');
+                $('#imprint-logo').addClass('rotate')
+            });
+        }); //]]>
+    </script>
 </head>
 
 <body>
-        <div class="splash">
-            <img id="imprint-logo" src="logo.png" height="300" width="300">
-            <p class="splash-subhead">
-                IMPRINT presents Culture Night Radio
-            </p>
-
-            <div id="wrapper">
-  <div id="jquery_jplayer_1" class="jp-jplayer"></div>
-  <div id="jp_container_1" class="jp-audio">
-    <div class="jp-type-single">
-      <div class="header">
-         <h4>&#9836; Listeners: <span id="listeners" title="Online">?</span></h4>
-      </div>
-
-      <div class="jp-gui jp-interface">
-        <ul class="jp-controls">
-          <li><a href="javascript:;" class="jp-play" tabindex="1"></a></li>
-          <li><a href="javascript:;" class="jp-pause" tabindex="1"></a></li>
-          <li><a href="javascript:;" class="jp-mute" tabindex="1" title="mute"></a></li>
-          <li><a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute"></a></li>
-          <li><a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume"></a></li>
-        </ul>
-        <div class="jp-volume-bar">
-          <div class="jp-volume-bar-value"></div>
-        </div>
-      </div>
-      <div class="jp-title">
-        <ul>
-           <li id="current-track">Currently playing...</li>
-        </ul>
-      </div>
-      <div class="jp-no-solution">
-        <span>Update Required</span>
-        To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
-      </div>
-    </div>
-  </div>
+    <div class="splash">
+        <img id="imprint-logo" src="logo.png" height="300" width="300">
+        <p class="splash-subhead">
+            IMPRINT presents Culture Night Radio
+        </p>
+        <div id="wrapper">
+            <div id="jquery_jplayer_1" class="jp-jplayer"></div>
+            <div id="jp_container_1" class="jp-audio">
+                <div class="jp-type-single">
+                    <div class="header">
+                        <h4>&#9836; Listeners: <span id="listeners" title="Online">?</span></h4>
+                    </div>
+                    <div class="jp-gui jp-interface">
+                        <ul class="jp-controls">
+                            <li>
+                                <a href="javascript:;" class="jp-play" tabindex="1"></a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" class="jp-pause" tabindex="1"></a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" class="jp-mute" tabindex="1" title="mute"></a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" class="jp-unmute" tabindex="1" title="unmute"></a>
+                            </li>
+                            <li>
+                                <a href="javascript:;" class="jp-volume-max" tabindex="1" title="max volume"></a>
+                            </li>
+                        </ul>
+                        <div class="jp-volume-bar">
+                            <div class="jp-volume-bar-value"></div>
+                        </div>
+                    </div>
+                    <div class="jp-title">
+                        <ul>
+                            <li id="current-track">Currently playing...</li>
+                        </ul>
+                    </div>
+                    <div class="jp-no-solution">
+                        <span>Update Required</span>
+                        To play the media you will need to either update your browser to a recent version or update your <a href="http://get.adobe.com/flashplayer/" target="_blank">Flash plugin</a>.
+                    </div>
+                </div>
             </div>
-            <p class="splash-subhead">
-                <a href="index.html" >HOME</a>
-            </p>
         </div>
+        <p class="splash-subhead">
+            <a href="index.html">HOME</a>
+        </p>
+    </div>
 </body>
 
 </html>
